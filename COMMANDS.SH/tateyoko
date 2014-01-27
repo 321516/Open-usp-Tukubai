@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} [-d[<string>]] <file>
-Version : Sat Jul 20 15:02:19 JST 2013
+Version : Mon Jan 27 20:47:07 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 ____USAGE
 	exit 1
@@ -27,7 +27,8 @@ case "$1" in
 		shift
 		;;
 esac
-if [ \( -f "$1" \) -o \( -c "$1" \) -o \( "_$1" = '_-' \) ]; then
+if [ \( -f "$1" \) -o \( -c "$1" \) -o \( -p "$1" \) -o \
+     \( "_$1" = '_-' \)                                 ]; then
 	file="$1"
 elif [ $# -lt 1 ]; then
 	file='-'

@@ -9,7 +9,7 @@ print_usage_and_exit () {
 Usage   : ${0##*/} n1 n2 .. <filename>
         : ${0##*/} -v <filename>
         : ${0##*/} [--] <filename>
-Version : Thu Oct 18 22:00:00 JST 2012
+Version : Mon Jan 27 20:33:33 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 ____USAGE
 	exit 1
@@ -60,7 +60,8 @@ if [ $# -gt 1 ]; then
 	print_usage_and_exit
 elif [ -z "$1" ]; then
 	file='-'
-elif [ \( -f "$1" \) -o \( -c "$1" \) -o \( "_$1" = '_-' \) ]; then
+elif [ \( -f "$1" \) -o \( -c "$1" \) -o \( -p "$1" \) -o \
+       \( "_$1" = '_-' \)                                 ]; then
 	file="$1"
 else
 	print_usage_and_exit
@@ -82,7 +83,7 @@ fi
 if [ \( $use_stdin -gt 0 \) -a \( \( $mode -eq 0 \) -o \( $mode -eq 2 \) \) ]; then
 	tmpfile=$(mktemp -t "${0##*/}.XXXXXXXX")
 	if [ $? -eq 0 ]; then
-		trap "rm -f $tmpfile; exit" EXIT HUP INT QUIT ALRM SEGV TERM
+		trap "rm -f $tmpfile; exit" EXIT HUP INT QUIT PIPE ALRM TERM
 		cat > "$tmpfile"
 		file=$tmpfile
 	else

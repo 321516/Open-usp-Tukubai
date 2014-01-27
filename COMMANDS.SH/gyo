@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} [-f] <file> ...
-Version : Thu Oct 18 22:00:00 JST 2012
+Version : Mon Jan 27 20:23:10 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 ____USAGE
 	exit 1
@@ -25,7 +25,7 @@ proc_a_file () {
 	else
 		tmpfile=$(mktemp -t "${name_of_me}.XXXXXXXX")
 		if [ $? -eq 0 ]; then
-			trap "rm -f $tmpfile; exit" 0 1 2 3 11 14 15
+			trap "rm -f $tmpfile; exit"  EXIT HUP INT QUIT PIPE ALRM TERM
 		else
 			echo "${name_of_me}: Cannot create a temporary file" 1>&2
 			exit 1
@@ -42,7 +42,7 @@ proc_a_file () {
 	fi
 	if [ -n "$tmpfile" ]; then
 		rm -f "$tmpfile"
-		trap  0 1 2 3 11 14 15
+		trap  EXIT HUP INT QUIT PIPE ALRM TERM
 		tmpfile=''
 	fi
 	#
@@ -50,7 +50,7 @@ proc_a_file () {
 	if [ $foption -eq 0 ]; then
 		echo $gyo
 	else
-		echo "_$1 $gyo" | sed 's/^_//'
+		printf '$s %d' "$1" "$gyo"
 	fi
 }
 
@@ -79,7 +79,7 @@ for arg in "$@"; do
 		[ $use_stdin -eq 0 ] || print_usage_and_exit
 		is_stdin=1
 		file="$arg"
-	elif [ \( -f "$arg" \) -o \( -c "$arg" \) ]; then
+	elif [ \( -f "$arg" \) -o \( -c "$arg" \) -o \( -p "$arg" \) ]; then
 		file="$arg"
 	else
 		print_usage_and_exit

@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} [+count] <k1> <k2> <s1> <s2> <file>
-Version : Thu Oct 18 22:00:00 JST 2012
+Version : Mon Jan 27 20:46:16 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 ____USAGE
 	exit 1
@@ -42,7 +42,8 @@ fi
 if [ $# -eq 4 ]; then
 	file='-'
 elif [ $# -eq 5 ]; then
-	if [ \( -f "$5" \) -o \( -c "$5" \) -o \( "_$5" = '_-' \) ]; then
+	if [ \( -f "$5" \) -o \( -c "$5" \) -o \( -p "$5" \) -o \
+	     \( "_$5" = '_-' \)                                 ]; then
 		file=$5
 	else
 		print_usage_and_exit

@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} [+ng[<fd>]] key=<n> <master> <tran>
-Version : Thu Dec 25 01:04:48 JST 2012
+Version : Mon Jan 27 20:40:45 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 ____USAGE
 	exit 1
@@ -73,11 +73,13 @@ for arg in "$@"; do
 			;;
 		*)
 			if [ -z "$masterfile" ]; then
-				if [ \( -f "$arg" \) -o \( -c "$arg" \) -o \( "_$arg" = '_-' \) ]; then
+				if [ \( -f "$arg" \) -o \( -c "$arg" \) -o \( -p "$arg" \) -o \
+				     \( "_$arg" = '_-' \)                                     ]; then
 					masterfile=$arg
 				fi
 			elif [ -z "$tranfile" ]; then
-				if [ \( -f "$arg" \) -o \( -c "$arg" \) -o \( "_$arg" = '_-' \) ]; then
+				if [ \( -f "$arg" \) -o \( -c "$arg" \) -o \( -p "$arg" \) -o \
+				     \( "_$arg" = '_-' \)                                     ]; then
 					tranfile=$arg
 				fi
 			else

@@ -8,7 +8,7 @@ print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} <f1> <f2> ... <file>
         : ${0##*/} -d <f1> <f2> ... <string>
-Version : Mon Dec 24 22:19:31 JST 2012
+Version : Mon Jan 27 20:20:20 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 ____USAGE
 	exit 1
@@ -87,6 +87,7 @@ else
 	fi
 	if [ \( ! -f "$file"     \) -a \
 	     \( ! -c "$file"     \) -a \
+	     \( ! -p "$file"     \) -a \
 	     \( "_$file" != '_-' \)    ]
 	then
 		print_usage_and_exit
@@ -247,14 +248,13 @@ function clear_fields(from, to, i) {
 
 # delf
 if [ $directmode -ne 0 ]; then
-	str=$(echo "_${directstr}_"  |
-	      sed 's/^_\(.*\)_$/\1/' |
-	      awk "$awkcode"         )
+	str=$(printf '%s' "$directstr" |
+	      awk "$awkcode"           )
 	ret=$?
 	if [ $ret -ne 0 ]; then
 		exit $ret
 	fi
-	echo "_${str}_" | sed 's/^_\(.*\)_$/\1/' | sed 's/^ \{1,\}//;s/ \{1,\}$//;s/ \{1,\}/ /g'
+	printf '%s' "$str" | sed 's/^ \{1,\}//;s/ \{1,\}$//;s/ \{1,\}/ /g'
 elif echo "_$awkc0" | grep -F 'light' > /dev/null; then
 	exec awk "$awkcode" "$file"
 else

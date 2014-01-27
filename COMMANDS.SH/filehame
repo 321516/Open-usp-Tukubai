@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} -l<string> <template> <data>
-Version : Sat Jul 20 12:35:35 JST 2013
+Version : Mon Jan 27 20:32:18 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 ____USAGE
 	exit 1
@@ -42,7 +42,7 @@ if [ \( "_$1" = '_-'               \) -o \
 then
 	tmplfile='-'
 	use_stdin=$((use_stdin+1))
-elif [ \( -f "$1" \) -o \( -c "$1" \) ]; then
+elif [ \( -f "$1" \) -o \( -c "$1" \) -o \( -p "$1" \) ]; then
 	tmplfile=$1
 else
 	echo "${0##*/}: Invalid template file" 2>&1
@@ -59,7 +59,7 @@ else
 	then
 		file='-'
 		use_stdin=$((use_stdin+1))
-	elif [ \( -f "$2" \) -o \( -c "$2" \) ]; then
+	elif [ \( -f "$2" \) -o \( -c "$2" \) -o \( -p "$2" \) ]; then
 		file=$2
 	else
 	echo "${0##*/}: Invalid data file" 2>&1
@@ -80,7 +80,7 @@ elif [ "_$file" = '_-' ]; then
 	s=$(mktemp -t "${0##*/}.XXXXXXXX")
 	if [ $? -eq 0 ]; then
 		file=$s
-		trap "rm -f $file; exit" EXIT HUP INT QUIT ALRM SEGV TERM
+		trap "rm -f $file; exit" EXIT HUP INT QUIT PIPE ALRM TERM
 		cat > "$file"
 	else
 		echo "${0##*/} : Cannot create a temporary file" 1>&2

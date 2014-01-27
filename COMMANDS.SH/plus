@@ -31,11 +31,9 @@ done
 # plus
 result=$(echo "${formula# + }" | bc | tr -d '\\\n')
 if [ "${result#.}" != "$result" ]; then
-	echo -n '0'
-	echo $result
+	echo "0$result"
 elif [ "${result#-.}" != "$result" ]; then
-	echo -n '-0'
-	echo ${result#-}
+	echo "-0${result#-}"
 else
 	echo $result
 fi

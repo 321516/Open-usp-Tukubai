@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} [-v] <name> <MIME-file>
-Version : Thu Jul 19 03:32:21 JST 2013
+Version : Mon Jan 27 20:34:15 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
         :   * Although GNU AWK produces better performance than the
         :     other AWKs
@@ -25,7 +25,7 @@ make_temp_file () {
 	tmpfile=$(mktemp -t "${0##*/}.XXXXXXXX")
 	if [ $? -eq 0 ]; then
 		tmpfiles="$tmpfiles $tmpfile"
-		trap "rm -f $tmpfiles; exit" EXIT HUP INT QUIT ALRM SEGV TERM
+		trap "rm -f $tmpfiles; exit" EXIT HUP INT QUIT PIPE ALRM TERM
 	else
 		echo "${0##*/} : Cannot create a temporary file" 1>&2
 		exit 1
@@ -93,6 +93,7 @@ if [ -z "$mime_file" ]; then
 	mime_file='-'
 elif [ \( ! -f "$mime_file"     \) -a \
        \( ! -c "$mime_file"     \) -a \
+       \( ! -p "$mime_file"     \) -a \
        \( "_$mime_file" != '_-' \)    ]
 then
   print_usage_and_exit

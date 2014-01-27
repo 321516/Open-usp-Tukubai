@@ -1,0 +1,46 @@
+#! /bin/sh
+
+awk '
+BEGIN{
+  o["0"]="000"; o["1"]="001"; o["2"]="010"; o["3"]="011";
+  o["4"]="100"; o["5"]="101"; o["6"]="110"; o["7"]="111";
+
+  for (i=0; i<256; i++) {
+    s = sprintf("%03o\n",i);
+    s = substr(o[substr(s,1,1)] o[substr(s,2,1)] o[substr(s,3,1)],2);
+    c[s] = sprintf("%c",i);
+  }
+
+  for(i=0;i<26;i++){
+    s = sprintf("%02o\n",i);
+    t[sprintf("%c",i+65)] = o[substr(s,1,1)] o[substr(s,2,1)];
+  }
+  for (i=26;i<52;i++){
+    s = sprintf("%02o\n",i);
+    t[sprintf("%c",i+71)] = o[substr(s,1,1)] o[substr(s,2,1)];
+  }
+  for (i=52;i<62;i++){
+    s = sprintf("%02o\n",i);
+    t[sprintf("%c",i- 4)] = o[substr(s,1,1)] o[substr(s,2,1)];
+  }
+  t["+"] = "111110"; t["/"] = "111111";
+  t["="] = ""; t[""] = ""; t[sprintf("%c",13)] = "";
+
+  OFS = ""; ORS = "";
+  while (getline bline < "/dev/stdin") {
+    l1 = length(bline);
+    for (i=1;i<=l1;i+=4) {
+      b = substr(bline,i,4);
+      s = t[substr(b,1,1)] t[substr(b,2,1)] t[substr(b,3,1)] t[substr(b,4,1)];
+      l2 = length(s);
+      if (l2 == 24) {
+        print c[substr(s,1,8)],c[substr(s,9,8)],c[substr(s,17,8)];
+      } else if (l2 == 18) {
+        print c[substr(s,1,8)],c[substr(s,9,8)];
+      } else if (l2 == 12) {
+        print c[substr(s,1,8)];
+      }
+    }
+  }
+}
+'

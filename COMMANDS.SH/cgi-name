@@ -7,7 +7,7 @@
 print_usage_and_exit () {
 	cat <<____USAGE 1>&2
 Usage   : ${0##*/} [-d<c>] [-i<string>] [--template <html>] <param_file>
-Version : Sat Jul 20 12:32:33 JST 2013
+Version : Mon Jan 27 20:36:30 JST 2014
         : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 ____USAGE
 	exit 1
@@ -99,6 +99,7 @@ if [ $use_stdin -gt 1 ]; then
 fi
 if [ \( ! -f "$param_file"     \) -a \
      \( ! -c "$param_file"     \) -a \
+     \( ! -p "$param_file"     \) -a \
      \( "_$param_file" != '_-' \)    ]
 then
 	print_usage_and_exit
@@ -111,6 +112,7 @@ fi
 # operate the --template option
 if [ \( -f "$tmpl_file"      \) -o \
      \( -c "$tmpl_file"      \) -o \
+     \( -p "$tmpl_file"      \) -o \
      \( "_$tmpl_file" = '_-' \)    ]
 then
 	if [ \( ! -r "$tmpl_file" \) -a \( "_$tmpl_file" != '_-' \) ]; then
