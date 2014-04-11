@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} <f1> <f2> ... <file>
 	        : ${0##*/} -d <f1> <f2> ... <string>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Sat Apr 12 02:03:05 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -241,6 +241,8 @@ function clear_fields(from, to, i) {
     from = to;
     to = i;
   }
+  if (from > NF) {return;}
+  if (to   > NF) {to=NF; }
   for (i=from; i<to; i++) {
     $i = "";
   }
@@ -257,7 +259,11 @@ if [ $directmode -ne 0 ]; then
   fi
   printf '%s' "$str" | sed 's/^ \{1,\}//;s/ \{1,\}$//;s/ \{1,\}/ /g'
 elif echo "_$awkc0" | grep -F 'light' > /dev/null; then
-  exec awk "$awkcode" "$file"
+  exec 3>&1
+  ret=$({ { awk "$awkcode" "$file" 3>&- 4>&-; echo $? 1>&4 3>&- 4>&-;} | sed 's/ \{1,\}$//' 1>&3 3>&- 4>&-;} 4>&1)
+  if [ $ret != 0 ]; then
+    exit 1
+  fi
 else
   exec 3>&1
   ret=$({ { awk "$awkcode" "$file" 3>&- 4>&-; echo $? 1>&4 3>&- 4>&-;} | sed 's/^ \{1,\}//;s/ \{1,\}$//;s/ \{1,\}/ /g' 1>&3 3>&- 4>&-;} 4>&1)
