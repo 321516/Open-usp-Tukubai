@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} [-<n>] [-d[<string>]] [num=<n>] <file>
-		Version : Sat May  3 13:39:59 JST 2014
+		Version : Sat May  3 19:23:57 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -17,7 +17,7 @@ __USAGE
 PATH='/usr/bin:/bin'
 
 # parse the arguments
-n=1
+n=-1
 dopt=' '
 numopt=0
 file=''
@@ -63,6 +63,7 @@ done
 [ -n "$file" ] || file='-'
 
 # validate the file arguments
+[ $n -ne 0 ] || print_usage_and_exit
 if [ \( ! -r "$file" \) -a \( "_$file" != '_-' \) ]; then
   echo "${0##*/}: Cannot open the file" 1>&2
   exit 1
