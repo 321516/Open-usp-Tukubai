@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+ng] <k1> <k2> <file>
-	Version : Sat May  3 21:18:47 JST 2014
+	Version : Sun May  4 01:12:23 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -68,8 +68,8 @@ BEGIN {
   }
   if (key != key0) {
     print data;
-  } else {
-    '$disable_ng'print data > "/dev/stderr";
+  '$disable_ng'} else {
+  '$disable_ng'  print data > "/dev/stderr";
   }
   data = $0;
   key0 = key;

@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-d<c>] [-i<string>] [--template <html>] <param_file>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Sun May  4 03:25:28 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -155,7 +155,7 @@ BEGIN {
   dopt        = ENVIRON["v1"];
   iopt        = ENVIRON["v2"];
   dopt_is_set = ENVIRON["v3"];
-  tmplvars    = ENVIRON["v3"];
+  tmplvars    = ENVIRON["v4"];
   split(tmplvars, array0);
   for (var in array0) {
     tmplvar[array0[var]]="";
