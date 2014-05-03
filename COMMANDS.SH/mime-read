@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-v] <name> <MIME-file>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Sat May  3 13:40:17 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 	        :   * Although GNU AWK produces better performance than the
 	        :     other AWKs
@@ -343,19 +343,19 @@ function up_to_the_parent() {
 '
 
 # main #1 (GNU AWK available or -v option)
-# (awk should not be run with "exec" because of having to remove tempfiles)
 if [ -n "$novoptnobawk" ]; then
-  env - "v1=$name" $CMD_AWK "$awk_code" "$mime_file"
+  env - v1="$name" exec $CMD_AWK "$awk_code" "$mime_file"
   exit $?
 fi
 
 # main #2 (GNU AWK unavailable and without -v option)
+# (commands should not be run with "exec" because of having to remove tempfiles)
 if [ "$mime_file" = '-' ]; then
   make_temp_file
   mime_file=$tmpfile
   cat > "$mime_file"
 fi
-st_ed_linenums=$(env - "v1=$name" $CMD_AWK "$awk_code" "$mime_file")
+st_ed_linenums=$(env - v1="$name" $CMD_AWK "$awk_code" "$mime_file")
 ret=$?
 [ $ret -ne 0 ] && exit $ret
 st_linenum=${st_ed_linenums%:*}

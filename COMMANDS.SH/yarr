@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} [-<n>] [-d[<string>]] [num=<n>] <file>
-		Version : Sat May  3 13:39:38 JST 2014
+		Version : Sat May  3 13:39:59 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -76,47 +76,39 @@ BEGIN {
   d   = ENVIRON["v3"];
   ORS = "";
   LF  = sprintf("\n");
+  cnt = n;
+  idx = "";
 }
 {
   # ===== make the index string ====================================
   #
-  idx = "";
-  for (i=1; i<=num; i++) {
-    idx = idx $i OFS;
+  if (cnt == n) {
+    idx = "";
+    for (i=1; i<=num; i++) {
+      idx = idx $i OFS;
+    }
   }
 
-  # ===== TARRing ==================================================
+  # ===== YARRing ==================================================
   #
-  if (d == FS) {
-    # --- case #1 (without -d option) ------------------------------
-    # 1) extract
-    for (i=1+num; i<=NF; i+=n) {
+  for (i=1+num; i<=NF; i++) {
+    if (cnt == n) {
       print idx;
       dlm = "";
-      for (j=i; j<i+n; j++) {
-        print dlm $j;
-        dlm = OFS;
-      }
-      print LF;
     }
-  } else {
-    # --- case #2 (with -d option) ---------------------------------
-    # 1) split data fields
-    data = $0;
-    for (i=1; i<=num; i++) {
-      data = substr(data,length($i)+1);
-      sub(/^[[:blank:]]+/, "", data);
-    }
-    split(data, fld, d);
-    # 2) extract
-    for (i=1; i<=NF; i+=n) {
-      print idx;
-      dlm = "";
-      for (j=i; j<i+n; j++) {
-        print dlm fld[j];
-        dlm = OFS;
-      }
+    print dlm $i;
+    dlm = d;
+    cnt--;
+    if (cnt == 0) {
       print LF;
+      cnt = n;
     }
   }
-}' "$file"
+}
+END {
+  if (cnt != n) {
+    print LF;
+  }
+}
+
+' "$file"

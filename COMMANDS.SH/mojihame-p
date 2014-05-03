@@ -5,9 +5,9 @@
 
 # print the usage and exit
 print_usage_and_exit () {
-  cat <<__USAGE 1>&2
+  cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} [-d[<string>]] <template> <data>
-		Version : Sat Mar 29 18:44:55 JST 2014
+		Version : Sat May  3 13:39:19 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
