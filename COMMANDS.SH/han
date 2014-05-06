@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+<n>h] <f1> <f2> ... <file>
 	        : ${0##*/} -d <string>
-	Version : Wed May  7 02:18:19 JST 2014
+	Version : Wed May  7 07:37:39 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -320,7 +320,7 @@ function utf8zen2han_prep() {
   z2h["ヅ"]="ﾂﾞ"; z2h["デ"]="ﾃﾞ"; z2h["ド"]="ﾄﾞ"; z2h["バ"]="ﾊﾞ";
   z2h["ビ"]="ﾋﾞ"; z2h["ブ"]="ﾌﾞ"; z2h["ベ"]="ﾍﾞ"; z2h["ボ"]="ﾎﾞ";
   z2h["パ"]="ﾊﾟ"; z2h["ピ"]="ﾋﾟ"; z2h["プ"]="ﾌﾟ"; z2h["ペ"]="ﾍﾟ";
-  z2h["ポ"]="ﾎﾟ"; z2h["ヴ"]="ｳﾞ"; z2h["ヺ"]="ｦﾞ";
+  z2h["ポ"]="ﾎﾟ"; z2h["ヴ"]="ｳﾞ"; z2h["ヷ"]="ﾜﾞ"; z2h["ヺ"]="ｦﾞ";
 
   # memorize groups
   z2hgroup[sprintf("\342\200")]=1; # E2 80 *
