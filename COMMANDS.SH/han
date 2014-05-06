@@ -6,10 +6,10 @@
 # print the usage and exit
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
-	Usage   : ${0##*/} [+<n>h] [-4] <f1> <f2> ... <file>
-	        : ${0##*/} -d[4] <string>
-	Version : Wed May  7 02:28:28 JST 2014
-	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
+	Usage   : ${0##*/} [+<n>h] <f1> <f2> ... <file>
+	        : ${0##*/} -d <string>
+	Version : Wed May  7 02:18:19 JST 2014
+	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
 }
@@ -24,7 +24,6 @@ fldnums=''
 all_fields=0
 use_stdin=0
 opt_part=1
-digits=3
 hopt=0
 
 # parse the arguments
@@ -35,17 +34,6 @@ for arg in "$@"; do
   # direct mode processing
   if   [ \( $opt_part -ne 0 \) -a \( "_$arg" = '_-d'        \) ]; then
     directmode=1
-    continue
-  elif [ \( $opt_part -ne 0 \) -a \( "_$arg" = '_-d4'       \) ]; then
-    directmode=1
-    digits=4
-    continue
-  elif [ \( $opt_part -ne 0 \) -a \( "_$arg" = '_-4d'       \) ]; then
-    directmode=1
-    digits=4
-    continue
-  elif [ \( $opt_part -ne 0 \) -a \( "_$arg" = '_-4'        \) ]; then
-    digits=4
     continue
   elif [ \( $opt_part -ne 0 \) -a \( "_$arg" != "_${arg#+}" \) ]; then
     s=$(echo "_$arg" | sed 's/^_+\([0-9]*\)h$/\1/')
@@ -94,7 +82,8 @@ for arg in "$@"; do
   # otherwise, it is a invalid argument
   print_usage_and_exit
 done
-[ -n "$fldnums" ] || print_usage_and_exit
+# (if you want to regard no fldnums as all, set all_fields=1 instead of exit)
+[ -n "$fldnums" ] || all_fields=1
 if [ $directmode -ne 0 ]; then
   [ -n "$directstr" ] || print_usage_and_exit
   file=''
@@ -248,7 +237,7 @@ if [ $all_fields -eq 0 ]; then
     awkc0b=''
   fi
 else
-  awkc0='split("",mark);for(i=1;i<=NF;i++){mark[i]=1}convert_marked_flds();print;'
+  awkc0='print utf8zen2han($0);'
   awkc0b=''
 fi
 
@@ -262,6 +251,7 @@ BEGIN {
       exit;
     }
   }
+  utf8zen2han_prep();
   '"$awkc0b"'
 }
 {
@@ -269,41 +259,121 @@ BEGIN {
 }
 function convert_marked_flds( fld) {
   for (fld in mark) {
-    $fld = insert_comma($fld);
+    $fld = utf8zen2han($fld);
   }
 }
-function insert_comma(str, a,bc,b,c,i,j,comma_b) {
-  if (! match(str, /^[+-]?[0-9]+(\.[0-9]*)?$/)) { return str; }
-  if (match(str, /^[+-]/)) {
-    a  = substr(str, 1, 1);
-    bc = substr(str, 2   );
-  } else {
-    a  = "";
-    bc = str;
+function utf8zen2han_prep() {
+
+  # register some character codes
+  #chr_80_1 = sprintf("\200");
+  chr_C0_X = sprintf("\300");
+  chr_E0_2 = sprintf("\340");
+  chr_F0_3 = sprintf("\360");
+  chr_F8_4 = sprintf("\370");
+  chr_FC_5 = sprintf("\374");
+  chr_FE_6 = sprintf("\376");
+
+  # memorize all of the transforming letters
+  z2h["　"]=" ";  z2h["！"]="!";  z2h["”"]="\""; z2h["＃"]="#";
+  z2h["＄"]="$";  z2h["％"]="%";  z2h["＆"]="&";  z2h["’"]="'"'"'";
+  z2h["（"]="(";  z2h["）"]=")";  z2h["＊"]="*";  z2h["＋"]="+";
+  z2h["，"]=",";  z2h["－"]="-";  z2h["．"]=".";  z2h["／"]="/";
+  z2h["０"]="0";  z2h["１"]="1";  z2h["２"]="2";  z2h["３"]="3";
+  z2h["４"]="4";  z2h["５"]="5";  z2h["６"]="6";  z2h["７"]="7";
+  z2h["８"]="8";  z2h["９"]="9";  z2h["："]=":";  z2h["；"]=";";
+  z2h["＜"]="<";  z2h["＝"]="=";  z2h["＞"]=">";  z2h["？"]="?";
+  z2h["＠"]="@";  z2h["Ａ"]="A";  z2h["Ｂ"]="B";  z2h["Ｃ"]="C";
+  z2h["Ｄ"]="D";  z2h["Ｅ"]="E";  z2h["Ｆ"]="F";  z2h["Ｇ"]="G";
+  z2h["Ｈ"]="H";  z2h["Ｉ"]="I";  z2h["Ｊ"]="J";  z2h["Ｋ"]="K";
+  z2h["Ｌ"]="L";  z2h["Ｍ"]="M";  z2h["Ｎ"]="N";  z2h["Ｏ"]="O";
+  z2h["Ｐ"]="P";  z2h["Ｑ"]="Q";  z2h["Ｒ"]="R";  z2h["Ｓ"]="S";
+  z2h["Ｔ"]="T";  z2h["Ｕ"]="U";  z2h["Ｖ"]="V";  z2h["Ｗ"]="W";
+  z2h["Ｘ"]="X";  z2h["Ｙ"]="Y";  z2h["Ｚ"]="Z";  z2h["［"]="[";
+  z2h["＼"]="\\"; z2h["］"]="]";  z2h["＾"]="^";  z2h["＿"]="_";
+  z2h["‘"]="`";  z2h["ａ"]="a";  z2h["ｂ"]="b";  z2h["ｃ"]="c";
+  z2h["ｄ"]="d";  z2h["ｅ"]="e";  z2h["ｆ"]="f";  z2h["ｇ"]="g";
+  z2h["ｈ"]="h";  z2h["ｉ"]="u";  z2h["ｊ"]="j";  z2h["ｋ"]="k";
+  z2h["ｌ"]="l";  z2h["ｍ"]="m";  z2h["ｎ"]="n";  z2h["ｏ"]="o";
+  z2h["ｐ"]="p";  z2h["ｑ"]="q";  z2h["ｒ"]="r";  z2h["ｓ"]="s";
+  z2h["ｔ"]="t";  z2h["ｕ"]="u";  z2h["ｖ"]="v";  z2h["ｗ"]="w";
+  z2h["ｘ"]="x";  z2h["ｙ"]="y";  z2h["ｚ"]="z";  z2h["｛"]="{";
+  z2h["｜"]="|";  z2h["｝"]="}";  z2h["～"]="~";
+                  z2h["。"]="｡";  z2h["「"]="｢";  z2h["」"]="｣";
+  z2h["、"]="､";  z2h["・"]="･";  z2h["ヲ"]="ｦ";  z2h["ァ"]="ｧ";
+  z2h["ィ"]="ｨ";  z2h["ゥ"]="ｩ";  z2h["ェ"]="ｪ";  z2h["ォ"]="ｫ";
+  z2h["ャ"]="ｬ";  z2h["ュ"]="ｭ";  z2h["ョ"]="ｮ";  z2h["ッ"]="ｯ";
+  z2h["ー"]="ｰ";  z2h["ア"]="ｱ";  z2h["イ"]="ｲ";  z2h["ウ"]="ｳ";
+  z2h["エ"]="ｴ";  z2h["オ"]="ｵ";  z2h["カ"]="ｶ";  z2h["キ"]="ｷ";
+  z2h["ク"]="ｸ";  z2h["ケ"]="ｹ";  z2h["コ"]="ｺ";  z2h["サ"]="ｻ";
+  z2h["シ"]="ｼ";  z2h["ス"]="ｽ";  z2h["セ"]="ｾ";  z2h["ソ"]="ｿ";
+  z2h["タ"]="ﾀ";  z2h["チ"]="ﾁ";  z2h["ツ"]="ﾂ";  z2h["テ"]="ﾃ";
+  z2h["ト"]="ﾄ";  z2h["ナ"]="ﾅ";  z2h["ニ"]="ﾆ";  z2h["ヌ"]="ﾇ";
+  z2h["ネ"]="ﾈ";  z2h["ノ"]="ﾉ";  z2h["ハ"]="ﾊ";  z2h["ヒ"]="ﾋ";
+  z2h["フ"]="ﾌ";  z2h["ヘ"]="ﾍ";  z2h["ホ"]="ﾎ";  z2h["マ"]="ﾏ";
+  z2h["ミ"]="ﾐ";  z2h["ム"]="ﾑ";  z2h["メ"]="ﾒ";  z2h["モ"]="ﾓ";
+  z2h["ヤ"]="ﾔ";  z2h["ユ"]="ﾕ";  z2h["ヨ"]="ﾖ";  z2h["ラ"]="ﾗ";
+  z2h["リ"]="ﾘ";  z2h["ル"]="ﾙ";  z2h["レ"]="ﾚ";  z2h["ロ"]="ﾛ";
+  z2h["ワ"]="ﾜ";  z2h["ン"]="ﾝ";  z2h["゛"]="ﾞ";  z2h["゜"]="ﾟ";
+  z2h["ガ"]="ｶﾞ"; z2h["ギ"]="ｷﾞ"; z2h["グ"]="ｸﾞ"; z2h["ゲ"]="ｹﾞ";
+  z2h["ゴ"]="ｺﾞ"; z2h["ザ"]="ｻﾞ"; z2h["ジ"]="ｼﾞ"; z2h["ズ"]="ｽﾞ";
+  z2h["ゼ"]="ｾﾞ"; z2h["ゾ"]="ｿﾞ"; z2h["ダ"]="ﾀﾞ"; z2h["ヂ"]="ﾁﾞ";
+  z2h["ヅ"]="ﾂﾞ"; z2h["デ"]="ﾃﾞ"; z2h["ド"]="ﾄﾞ"; z2h["バ"]="ﾊﾞ";
+  z2h["ビ"]="ﾋﾞ"; z2h["ブ"]="ﾌﾞ"; z2h["ベ"]="ﾍﾞ"; z2h["ボ"]="ﾎﾞ";
+  z2h["パ"]="ﾊﾟ"; z2h["ピ"]="ﾋﾟ"; z2h["プ"]="ﾌﾟ"; z2h["ペ"]="ﾍﾟ";
+  z2h["ポ"]="ﾎﾟ"; z2h["ヴ"]="ｳﾞ"; z2h["ヺ"]="ｦﾞ";
+
+  # memorize groups
+  z2hgroup[sprintf("\342\200")]=1; # E2 80 *
+  z2hgroup[sprintf("\343\200")]=1; # E3 80 *
+  z2hgroup[sprintf("\343\202")]=1; # E3 82 *
+  z2hgroup[sprintf("\343\203")]=1; # E3 83 *
+  z2hgroup[sprintf("\357\274")]=1; # EF BC *
+  z2hgroup[sprintf("\357\275")]=1; # EF BD *
+}
+
+function utf8zen2han(s_in, i,s,s1,s2,s_out) {
+  s_out = "";
+  for (i=1; i<=length(s_in); i++) {
+    s = substr(s_in,i,1);
+    #if        (s < chr_80_1) {
+    #  s_out = s_out s;
+    #  continue;
+    #}
+    if        (s < chr_C0_X) {
+      s_out = s_out s;
+    } else if (s < chr_E0_2) {
+      i++;
+      s_out = s_out s substr(s_in,i,1);
+    } else if (s < chr_F0_3) {
+      s1 = substr(s_in,i+1,1);
+      s2 = substr(s_in,i+2,1);
+      if (((s s1) in z2hgroup) && ((s s1 s2) in z2h)) {
+        s_out = s_out z2h[s s1 s2];
+      } else {
+        s_out = s_out s s1 s2;
+      }
+      i += 2;
+    } else if (s < chr_F8_4) {
+      s_out = s_out s substr(s_in,i+1,3);
+      i += 3;
+    } else if (s < chr_FC_5) {
+      s_out = s_out s substr(s_in,i+1,4);
+      i += 4;
+    } else if (s < chr_FE_6) {
+      s_out = s_out s substr(s_in,i+1,5);
+      i += 5;
+    } else {
+      s_out = s_out s;
+    }
   }
-  i = index(bc, ".");
-  if (i != 0) {
-    b = substr(bc, 1, i-1);
-    c = substr(bc, i     );
-  } else {
-    b = bc;
-    c = "";
-  }
-  i = length(b);
-  if (i <= comma_digits) { return str; }
-  j = ((i+comma_digits-1)%comma_digits)+1;
-  comma_b = substr(b, 1, j);
-  for (j++; j<i; j+=comma_digits) {
-    comma_b = comma_b "," substr(b, j, comma_digits);
-  }
-  return a comma_b c;
+  return s_out;
 }
 '
 
 # main
 if [ $directmode -ne 0 ]; then
-       printf '%s' "$directstr"                                 |
-       awk -v hdr_skip=$hopt -v comma_digits=$digits "$awkcode"
+       printf '%s' "$directstr"               |
+       env - awk -v hdr_skip=$hopt "$awkcode"
 else
-  exec awk -v hdr_skip=$hopt -v comma_digits=$digits "$awkcode" "$file"
+  exec env - awk -v hdr_skip=$hopt "$awkcode" "$file"
 fi
