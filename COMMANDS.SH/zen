@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+<n>h] [-k] <f1> <f2> ... <file>
 	        : ${0##*/} -d [-k] <string>
-	Version : Thu May  8 01:57:24 JST 2014
+	Version : Thu May  8 02:14:15 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -466,7 +466,7 @@ function utf8han2zen(s_in, i,s,s0,s1,s2,s_out) {
             }
           } else if (s1 == chr_BE) {
             # b-3-1-2. 2バイト目がBEの場合
-            if         ((s2 == chr_9E) || (s2 < chr_9F)    ) {
+            if         ((s2 == chr_9E) || (s2 == chr_9F)   ) {
               # b-3-1-2-1. 3バイト目が9E,9Fの場合
               s_out = s_out h2zd[s0 s s1 s2];       # <<< 濁点・半濁点
               s0 = "";
