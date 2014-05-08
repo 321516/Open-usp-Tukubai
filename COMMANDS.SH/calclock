@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+<n>h] [-r] <f1> <f2> ... <file>
 	        : ${0##*/} -d[r] <string>
-	Version : Thu May  8 17:45:34 JST 2014
+	Version : Thu May  8 19:44:09 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -284,6 +284,8 @@ function YYYYMMDDhhmmss2unixtime_prep(localtime_flag, gm,lo) {
 
   split("31 0 31 30 31 30 31 31 30 31 30 31", days_of_month);
 
+  YY = (substr("'$(date '+%Y')'",1,2) "00")*1;
+
   if (localtime_flag == "LOCALTIME") {
     gm      = YYYYMMDDhhmmss2unixtime('$(TZ=UTC+0 date '+%Y%m%d%H%M%S')');
     lo      = YYYYMMDDhhmmss2unixtime('$(         date '+%Y%m%d%H%M%S')');
@@ -341,7 +343,7 @@ function YYYYMMDDhhmmss2unixtime(YYYYMMDDhhmmss, Y,M,D,h,m,s,l) {
   if        (l <  5) { # invalid
     return -1;
   } else if (l <  8) { # YYMMMDD only
-    Y = substr(YYYYMMDDhhmmss,  1,l-4)*1+int('$(date '+%Y')'/100)*100;
+    Y = substr(YYYYMMDDhhmmss,  1,l-4)*1+YY;
     M = substr(YYYYMMDDhhmmss,l-3,  2)*1;
     D = substr(YYYYMMDDhhmmss,l-1,  2)*1;
     h = 0; m = 0; s = 0;
