@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-<n>] <file1> <file2> ...
-	Version : Sat May  3 13:40:40 JST 2014
+	Version : Thu May  8 22:58:06 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -32,7 +32,7 @@ mktemp_instead_of_stdin () {
     trap "rm -f $tmpfiles; exit" EXIT HUP INT QUIT PIPE ALRM TERM
     cat > "$tmpfile"
   else
-    echo "${0##*/} : Cannot create a temporary file" 1>&2
+    echo "${0##*/}: Cannot create a temporary file" 1>&2
     exit 1
   fi
 }
@@ -59,7 +59,10 @@ for arg in "$@"; do
     str=$(printf '%s' "$arg" |
           od -v -A n -t x1   |
           tr -d ' \n'        )
-    if echo "$hexed_filelist" | grep -F " $str " > /dev/null; then
+    if   echo "$hexed_filelist_readonce" | grep -F " $str " >/dev/null; then
+      echo "${0##*/}: Must not be set an irregular file two times" 1>&2
+      exit 1
+    elif echo "$hexed_filelist"          | grep -F " $str " >/dev/null; then
       retry=100
       while [ $retry -gt 0 ]; do
         retry=$((retry-1))
@@ -80,8 +83,11 @@ for arg in "$@"; do
         exit 1
       fi
       file=$tmpfile
-    else
+    elif [ -f "$arg" ]; then
       hexed_filelist="$hexed_filelist$str "
+      file=$arg
+    else
+      hexed_filelist_readonce="$hexed_filelist_readonce$str "
       file=$arg
     fi
   else

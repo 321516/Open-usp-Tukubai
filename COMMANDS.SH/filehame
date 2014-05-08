@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} -l<string> <template> <data>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Fri May  9 00:10:52 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -75,19 +75,7 @@ if [ \( ! -r "$tmplfile" \) -a \( "_$tmplfile" != '_-' \) ]; then
   echo "${0##*/}: Cannot open the file as the template file" 1>&2
   exit 1
 fi
-if [ -r "$file" ]; then
-  :
-elif [ "_$file" = '_-' ]; then
-  s=$(mktemp -t "${0##*/}.XXXXXXXX")
-  if [ $? -eq 0 ]; then
-    file=$s
-    trap "rm -f $file; exit" EXIT HUP INT QUIT PIPE ALRM TERM
-    cat > "$file"
-  else
-    echo "${0##*/} : Cannot create a temporary file" 1>&2
-    exit 1
-  fi
-else
+if [ \( ! -r "$file" \) -a \( "_$file" != '_-' \) ]; then
   echo "${0##*/}: Cannot open the file as the data file" 1>&2
   exit 1
 fi
