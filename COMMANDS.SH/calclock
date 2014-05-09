@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+<n>h] [-r] <f1> <f2> ... <file>
 	        : ${0##*/} -d[r] <string>
-	Version : Thu May  8 22:34:40 JST 2014
+	Version : Fri May  9 21:34:18 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -274,8 +274,8 @@ BEGIN {
 }
 function convert_marked_flds( fld) {
   for (fld in mark) {
-    '$ropt_ena'$fld = YYYYMMDDhhmmss2unixtime($fld);
-    '$ropt_dis'$fld = unixtime2YYYYMMDDhhmmss($fld);
+    '$ropt_ena'$fld = $fld OFS YYYYMMDDhhmmss2unixtime($fld);
+    '$ropt_dis'$fld = $fld OFS unixtime2YYYYMMDDhhmmss($fld);
   }
 }
 function YYYYMMDDhhmmss2unixtime_prep(localtime_flag, gm,lo) {
