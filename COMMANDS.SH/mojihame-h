@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} -h<label> [-d[<string>]] <template> <data>
-		Version : Thu Apr 10 23:57:43 JST 2014
+		Version : Fri Jun 27 03:06:51 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -78,7 +78,10 @@ if [ \( ! -r "$file_data" \) -a \( "_$file_data" != '_-' \) ]; then
 fi
 
 # main
-v1=$file_tmpl v2=$label v3=$asnull exec awk '
+export v1=$file_tmpl
+export v2=$label
+export v3=$asnull
+exec awk '
 BEGIN {
   # ===== Initalize ==================================================
   #

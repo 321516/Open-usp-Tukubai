@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-d[<string>]] <file>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Fri Jun 27 03:09:40 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -42,7 +42,8 @@ if [ \( ! -r "$file" \) -a \( "_$file" != '_-' \) ]; then
 fi
 
 # transpose the table
-v1=$dummy_fldstr exec awk '
+export v1=$dummy_fldstr
+exec awk '
 BEGIN {
   max_nf = 0;
   dummy_fldstr = ENVIRON["v1"];

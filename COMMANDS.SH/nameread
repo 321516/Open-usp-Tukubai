@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-el] [-d<c>] [-i<string>] <name> <name_file>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Fri Jun 27 03:03:38 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -152,7 +152,12 @@ BEGIN {
 }
 '
 if [ $eopt_is_set -eq 0 ]; then
-  v1=$dopt v2=$iopt v3=$name v4=$dopt_is_set v5=$lopt_is_set v6=$eopt_is_set \
+  export v1=$dopt
+  export v2=$iopt
+  export v3=$name
+  export v4=$dopt_is_set
+  export v5=$lopt_is_set
+  export v6=$eopt_is_set
   exec awk "$awk_code" "$name_file"
 else
   if [ "_${name#^}" = "_$name" ]; then
@@ -165,7 +170,12 @@ else
   else
     name="${name%$}"
   fi
-  grep -E "^${name}([[:blank:]]+.*|)$" "$name_file"                          |
-  v1=$dopt v2=$iopt v3=$name v4=$dopt_is_set v5=$lopt_is_set v6=$eopt_is_set \
+  export v1=$dopt
+  export v2=$iopt
+  export v3=$name
+  export v4=$dopt_is_set
+  export v5=$lopt_is_set
+  export v6=$eopt_is_set
+  grep -E "^${name}([[:blank:]]+.*|)$" "$name_file" |
   exec awk "$awk_code"
 fi

@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} [-<n>] [-d[<string>]] [num=<n>] <file>
-		Version : Fri Jun 27 01:24:59 JST 2014
+		Version : Fri Jun 27 03:30:56 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -70,7 +70,10 @@ if [ \( ! -r "$file" \) -a \( "_$file" != '_-' \) ]; then
 fi
 
 # main
-v1=$n v2=$numopt v3="$dopt" exec awk '
+export v1=$n
+export v2=$numopt
+export v3="$dopt"
+exec awk '
 BEGIN {
   n   = ENVIRON["v1"];
   num = ENVIRON["v2"];
