@@ -7,13 +7,13 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-f] <file> ...
-	Version : Fri Jun 27 05:25:14 JST 2014
+	Version : Fri Jun 27 07:21:58 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
 }
 # the alternative of the mktemp command
-which mktemp 2>/dev/null || {
+which mktemp >/dev/null 2>&1 || {
   mktemp_fileno=0
   mktemp() {
     local mktemp_filename
