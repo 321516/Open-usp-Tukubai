@@ -9,10 +9,21 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} -<n> <file>
 	          ${0##*/} <n> <file>
 	          ${0##*/} -<n>c <file>
-	Version : Thu May  8 22:31:42 JST 2014
+	Version : Fri Jun 27 05:22:24 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
+}
+# the alternative of the mktemp command
+which mktemp 2>/dev/null || {
+  mktemp_fileno=0
+  mktemp() {
+    local mktemp_filename
+    mktemp_filename="/tmp/${0##*/}.$$.$mktemp_fileno"
+    mktemp_fileno=$((mktemp_fileno+1))
+    touch $mktemp_filename
+    echo $mktemp_filename
+  }
 }
 
 

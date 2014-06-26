@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-d<c>] [-i<string>] [--template <html>] <param_file>
-	Version : Fri Jun 27 03:32:04 JST 2014
+	Version : Fri Jun 27 06:11:35 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -139,6 +139,10 @@ elif [ -n "$tmpl_file" ]; then
 fi
 
 # transfer the CGI variables string to the "cgi-name format"
+export v1=$dopt
+export v2=$iopt
+export v3=$dopt_is_set
+export v4=$tmplvars
 cat "$param_file"                                       |
 sed 's/\(%[0-9A-Fa-f][0-9A-Fa-f]\)/'"$LF"'\1'"$LF"'/g'  |
 sed '/^%/y/abcdef/ABCDEF/'                              |
@@ -146,10 +150,6 @@ tr -d '\n'                                              |
 sed 's/%0D%0A/\\n/g'                                    |
 sed 's/&/'"$LF"'/g'                                     |
 sed 's/+/ /'                                            |
-export v1=$dopt
-export v2=$iopt
-export v3=$dopt_is_set
-export v4=$tmplvars
 exec awk '
 BEGIN {
   for (i = 0; i < 256; i++) {
