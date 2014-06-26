@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} <f1> <f2> ... <file>
 	        : ${0##*/} -d <f1> <f2> ... <string>
-	Version : Fri Apr 11 12:32:45 JST 2014
+	Version : Fri Jun 27 01:23:06 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -41,7 +41,7 @@ for arg in "$@"; do
   if [ \( "_${arg1}/${arg2}" = "_$arg"   \) -a \
        \( -n "$arg1" \) -a \( -n "$arg2" \)    ]
   then
-    if echo "_$arg2" | grep '^_\(NF\|\(NF-\)\?[0-9]\{1,\}\)$' > /dev/null; then
+    if echo "_$arg2" | grep -E '^_(NF|(NF-)?[0-9]+)$' > /dev/null; then
       :
     else
       break
@@ -73,7 +73,7 @@ for arg in "$@"; do
   # judge the field number type of arg1 (also arg2 if possible)
   if echo "_$arg1" | grep '^_[0-9]\{1,\}$' > /dev/null; then
     arg1type=1
-  elif echo "_$arg1" | grep '^_\(NF\|NF-[0-9]\{1,\}\)$' > /dev/null; then
+  elif echo "_$arg1" | grep -E '^_(NF|NF-[0-9]+)$' > /dev/null; then
     arg1type=2
   else
     arg1type=-1
@@ -82,7 +82,7 @@ for arg in "$@"; do
     arg2type=0
   elif echo "_$arg2" | grep '^_[0-9]\{1,\}$' > /dev/null; then
     arg2type=1
-  elif echo "_$arg2" | grep '^_\(NF\|NF-[0-9]\{1,\}\)$' > /dev/null; then
+  elif echo "_$arg2" | grep -E '^_(NF|NF-[0-9]+)$' > /dev/null; then
     arg2type=2
   else
     arg2type=-1

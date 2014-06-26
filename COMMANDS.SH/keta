@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} n1 n2 .. <filename>
 	        : ${0##*/} -v <filename>
 	        : ${0##*/} [--] <filename>
-	Version : Thu May  8 23:15:01 JST 2014
+	Version : Fri Jun 27 01:17:43 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -46,7 +46,7 @@ case "$1" in
 esac
 if [ $mode -eq 0 ]; then
   while [ $# -gt 0 ]; do
-    test=$(echo "$1" | grep '^-\{0,1\}[0-9]\+\(x\([0-9]\+\|NF\(-[0-9]\+\)\{0,1\}*\)\)\{0,1\}$')
+    test=$(echo "_$1" | grep -E '^_-?[0-9]+(x([0-9]+|NF(-[0-9]+)?))?$')
     if [ -n "$test" ]; then
       mode=1
       widthes="$widthes $test"

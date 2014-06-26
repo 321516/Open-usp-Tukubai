@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+<n>h] [-r] <f1> <f2> ... <file>
 	        : ${0##*/} -d[r] <string>
-	Version : Fri May  9 21:34:18 JST 2014
+	Version : Fri Jun 27 00:56:29 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -77,12 +77,12 @@ for arg in "$@"; do
   # check both
   j=0
   for s in $arg1 $arg2; do
-    if echo "_$s" | grep '^_[0-9]\+$' > /dev/null; then
+    if echo "_$s" | grep '^_[0-9]\{1,\}$' > /dev/null; then
       j=$((j+1))
       if [ "$s" -eq 0 ]; then
         all_fields=1
       fi
-    elif echo "_$s" | grep '^_\(NF\|NF-[0-9]\{1,\}\)$' > /dev/null; then
+    elif echo "_$s" | grep -E '^_(NF|NF-[0-9]+)$' > /dev/null; then
       j=$((j+1))
     fi
   done
