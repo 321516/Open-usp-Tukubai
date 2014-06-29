@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} n1 n2 .. <filename>
 	        : ${0##*/} -v <filename>
 	        : ${0##*/} [--] <filename>
-	Version : Sun Jun 29 14:56:18 JST 2014
+	Version : Mon Jun 30 01:04:50 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -67,7 +67,7 @@ if [ $mode -eq 0 ]; then
     test=$(echo "_$1" | grep -E '^_-?[0-9]+(x([0-9]+|NF(-[0-9]+)?))?$')
     if [ -n "$test" ]; then
       mode=1
-      widthes="$widthes $test"
+      widthes="$widthes ${test#_}"
       shift
     else
       break
