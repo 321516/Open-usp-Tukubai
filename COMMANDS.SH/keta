@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} n1 n2 .. <filename>
 	        : ${0##*/} -v <filename>
 	        : ${0##*/} [--] <filename>
-	Version : Fri Jun 27 07:22:30 JST 2014
+	Version : Sat Jun 28 13:40:51 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -25,6 +25,12 @@ which mktemp >/dev/null 2>&1 || {
     echo $mktemp_filename
   }
 }
+# decide whether to use the alternative length of AWK or not
+if awk 'BEGIN{a[1]=1;b=length(a)}' 2>/dev/null; then
+  arlen='length'
+else
+  arlen='arlen'
+fi
 
 
 # initialize
@@ -237,6 +243,9 @@ fi
 if [ \( $mode -eq 0 \) -o \( $mode -eq 1 \) -o \( $mode -eq 2 \) ]; then
 
 awkcode_main_justificator='
+# the alternative length function for array variable
+function arlen(ar,i,l){for(i in ar){l++;}return l;}
+
 BEGIN {
   utf8strlen_prep();
   split(widthes_str, width_str);
@@ -286,7 +295,7 @@ function decide_widthes() {
     delete width[decide_widthes_j];
   }
   decide_widthes_j = 0;
-  for (decide_widthes_i = 1; decide_widthes_i <= length(width_str); decide_widthes_i++) {
+  for (decide_widthes_i = 1; decide_widthes_i <= '$arlen'(width_str); decide_widthes_i++) {
     if (match(width_str[decide_widthes_i], /^-?[0-9]+$/)) {
       decide_widthes_j++;
       width[decide_widthes_j] = width_str[decide_widthes_i];

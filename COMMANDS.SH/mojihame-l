@@ -7,11 +7,17 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} [-l<label>] [-d[<string>]] <template> <data>
-		Version : Fri Jun 27 03:11:43 JST 2014
+		Version : Sat Jun 28 14:07:26 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
 }
+# decide whether to use the alternative length of AWK or not
+if awk 'BEGIN{a[1]=1;b=length(a)}' 2>/dev/null; then
+  arlen='length'
+else
+  arlen='arlen'
+fi
 
 # Initialize
 PATH='/usr/bin:/bin'
@@ -81,6 +87,9 @@ export v1=$file_tmpl
 export v2=$label
 export v3=$asnull
 exec awk '
+# the alternative length function for array variable
+function arlen(ar,i,l){for(i in ar){l++;}return l;}
+
 BEGIN {
   # ===== Initalize ==================================================
   #
@@ -124,7 +133,7 @@ BEGIN {
       }
       data_buf[i] = s;
     }
-    for (i=0; i<length(line_buf); i++) {
+    for (i=0; i<'$arlen'(line_buf); i++) {
       #
       # --- scan the all of "%n" in a line
       line = line_buf[i];

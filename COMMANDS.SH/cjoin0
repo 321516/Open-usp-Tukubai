@@ -7,11 +7,17 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+ng[<fd>]] key=<n> <master> <tran>
-	Version : Fri Jun 27 01:02:16 JST 2014
+	Version : Sat Jun 28 13:23:56 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
 }
+# decide whether to use the alternative length of AWK or not
+if awk 'BEGIN{a[1]=1;b=length(a)}' 2>/dev/null; then
+  arlen='length'
+else
+  arlen='arlen'
+fi
 
 
 # initialize
@@ -124,6 +130,9 @@ fi
 # join
 exec awk -v key_1=$key_1 -v key_2=$key_2 -v ng=$ng \
 '
+  # the alternative length function for array variable
+  function arlen(ar,i,l){for(i in ar){l++;}return l;}
+
   # prepare
   BEGIN {
     fd = (ng != "") ? "/dev/fd/"ng : "";
@@ -137,7 +146,7 @@ exec awk -v key_1=$key_1 -v key_2=$key_2 -v ng=$ng \
       keytype = 3;
       split(key_1, keynum, "@");
       keynum_min = keynum[1];
-      for (i = 2; i <= length(keynum); i++) {
+      for (i = 2; i <= '$arlen'(keynum); i++) {
         keynum_min = (keynum[i] < keynum_min) ? keynum[i] : keynum_min;
       }
     }
@@ -154,7 +163,7 @@ exec awk -v key_1=$key_1 -v key_2=$key_2 -v ng=$ng \
       }
     } else if (keytype == 3) {
       str = "_";
-      for (i = 1; i <= length(keynum); i++) {
+      for (i = 1; i <= '$arlen'(keynum); i++) {
         str = str $keynum[i];
       }
     } else {
@@ -179,7 +188,7 @@ exec awk -v key_1=$key_1 -v key_2=$key_2 -v ng=$ng \
       }
     } else if (keytype == 3) {
       str = "_";
-      for (i = 1; i <= length(keynum); i++) {
+      for (i = 1; i <= '$arlen'(keynum); i++) {
         j = keynum[i] - keynum_min + 1;
         str = str $j;
       }

@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-v] <name> <MIME-file>
-	Version : Fri Jun 27 07:21:14 JST 2014
+	Version : Sat Jun 28 13:53:02 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 	        :   * Although GNU AWK produces better performance than the
 	        :     other AWKs
@@ -25,6 +25,12 @@ which mktemp >/dev/null 2>&1 || {
     echo $mktemp_filename
   }
 }
+# decide whether to use the alternative length of AWK or not
+if awk 'BEGIN{a[1]=1;b=length(a)}' 2>/dev/null; then
+  arlen='length'
+else
+  arlen='arlen'
+fi
 
 # initialize
 PATH='/usr/bin:/bin:/usr/local/bin'
@@ -130,6 +136,9 @@ fi
 
 # awk code
 awk_code='
+# the alternative length function for array variable
+function arlen(ar,i,l){for(i in ar){l++;}return l;}
+
 BEGIN {
   RS  = "\n";
   OFS = ""  ;
@@ -149,7 +158,7 @@ BEGIN {
   }
   split(wantedname, array, dlm);
   wantedname = "";
-  for (i=1; i<=length(array); i++) {
+  for (i=1; i<='$arlen'(array); i++) {
     s = array[i];
     if (match(array[i], /\[[0-9]+\]$/)) {
       s  = substr(array[i], RSTART+1, RLENGTH-2);
@@ -342,7 +351,7 @@ function up_to_the_parent() {
   if (depth in boundstr2) { delete boundstr2[depth]; }
   if (depth in namebros) {
     split(substr(namebros[depth],2,length(namebros[depth])-2), array, dlm);
-    for (i=1; i<=length(array); i++) {
+    for (i=1; i<='$arlen'(array); i++) {
       delete namerept[depth dlm array[i]];
     }
     split("", array);
