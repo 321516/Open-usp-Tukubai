@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-v] <name> <MIME-file>
-	Version : Sat Jun 28 13:53:02 JST 2014
+	Version : Sun Jun 29 14:56:44 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 	        :   * Although GNU AWK produces better performance than the
 	        :     other AWKs
@@ -21,8 +21,9 @@ which mktemp >/dev/null 2>&1 || {
     local mktemp_filename
     mktemp_filename="/tmp/${0##*/}.$$.$mktemp_fileno"
     mktemp_fileno=$((mktemp_fileno+1))
-    touch $mktemp_filename
-    echo $mktemp_filename
+    touch "$mktemp_filename"
+    chmod 600 "$mktemp_filename"
+    echo "$mktemp_filename"
   }
 }
 # decide whether to use the alternative length of AWK or not
