@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-<n>] <file1> <file2> ...
-	Version : Sun Jun 29 14:57:26 JST 2014
+	Version : Sun Jul 13 03:15:12 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -276,10 +276,10 @@ BEGIN {
 }
 '
 if [ -z "$tmpfiles" ]; then
-  exec env - v1="$filenames" v2="$numoption" v3="$max_widthes" \
+  exec env -i v1="$filenames" v2="$numoption" v3="$max_widthes" \
        awk "$awkcode_main2_ycat$awkcode_func_utf8strlen"
 else
   # (awk should not be run with "exec" because of having to remove tempfiles)
-  env - v1="$filenames" v2="$numoption" v3="$max_widthes" \
+  env -i v1="$filenames" v2="$numoption" v3="$max_widthes" \
   awk "$awkcode_main2_ycat$awkcode_func_utf8strlen"
 fi

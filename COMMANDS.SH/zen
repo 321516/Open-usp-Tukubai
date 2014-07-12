@@ -8,7 +8,7 @@ print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [+<n>h] [-k] <f1> <f2> ... <file>
 	        : ${0##*/} -d [-k] <string>
-	Version : Fri Jun 27 01:26:10 JST 2014
+	Version : Sun Jul 13 03:15:28 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -528,7 +528,7 @@ function utf8han2zen(s_in, i,s,s0,s1,s2,s_out) {
 # main
 if [ $directmode -ne 0 ]; then
        printf '%s' "$directstr"               |
-       env - awk -v hdr_skip=$hopt "$awkcode"
+       env -i awk -v hdr_skip=$hopt "$awkcode"
 else
-  exec env - awk -v hdr_skip=$hopt "$awkcode" "$file"
+  exec env -i awk -v hdr_skip=$hopt "$awkcode" "$file"
 fi

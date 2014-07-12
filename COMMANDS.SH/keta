@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} n1 n2 .. <filename>
 	        : ${0##*/} -v <filename>
 	        : ${0##*/} [--] <filename>
-	Version : Sun Jul 13 03:00:02 JST 2014
+	Version : Sun Jul 13 03:14:08 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -222,7 +222,7 @@ END {
   print substr(widthes, 1, length(widthes) - 1);
 }
 '
-widthes=$(env - awk "$awkcode_main_width_counter$awkcode_func_utf8strlen" "$file")
+widthes=$(env -i awk "$awkcode_main_width_counter$awkcode_func_utf8strlen" "$file")
 
 fi
 
@@ -338,9 +338,9 @@ function decide_widthes() {
 }
 '
 if [ -z "$tmpfile" ]; then
-  exec env - awk -v "widthes_str=$widthes" "$awkcode_main_justificator$awkcode_func_utf8strlen" "$file"
+  exec env -i awk -v "widthes_str=$widthes" "$awkcode_main_justificator$awkcode_func_utf8strlen" "$file"
 else
-  env - awk -v "widthes_str=$widthes" "$awkcode_main_justificator$awkcode_func_utf8strlen" "$file"
+  env -i awk -v "widthes_str=$widthes" "$awkcode_main_justificator$awkcode_func_utf8strlen" "$file"
 fi
 
 fi
