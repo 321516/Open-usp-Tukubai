@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 		Usage   : ${0##*/} [-<n>] [-d[<string>]] [num=<n>] <file>
-		Version : Fri Jun 27 03:07:53 JST 2014
+		Version : Sun Jul 13 02:25:12 JST 2014
 		        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -75,44 +75,47 @@ export v2=$numopt
 export v3="$dopt"
 exec awk '
 BEGIN {
-  n   = ENVIRON["v1"];
-  num = ENVIRON["v2"];
-  d   = ENVIRON["v3"];
-  ORS = "";
-  LF  = sprintf("\n");
-  cnt = n;
-  idx = "";
+  n    = ENVIRON["v1"];
+  num  = ENVIRON["v2"];
+  d    = ENVIRON["v3"];
+  ORS  = "";
+  LF   = sprintf("\n");
+  idx0 = " ";
+  idx  = "";
+  dlmr = "";
 }
 {
   # ===== make the index string ====================================
   #
-  if (cnt == n) {
+  if (num > 0) {
     idx = "";
     for (i=1; i<=num; i++) {
       idx = idx $i OFS;
     }
+  }
+  if (idx != idx0) {
+    cnt  = n;
+    idx0 = idx;
   }
 
   # ===== YARRing ==================================================
   #
   for (i=1+num; i<=NF; i++) {
     if (cnt == n) {
-      print idx;
-      dlm = "";
+      print dlmr idx;
+      dlm  = "";
     }
+    dlmr = LF;
     print dlm $i;
     dlm = d;
     cnt--;
     if (cnt == 0) {
-      print LF;
       cnt = n;
     }
   }
 }
 END {
-  if (cnt != n) {
-    print LF;
-  }
+  print dlmr;
 }
 
 ' "$file"
