@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} -<n> <file>
 	          ${0##*/} <n> <file>
 	          ${0##*/} -<n>c <file>
-	Version : Sat Aug  9 23:21:51 JST 2014
+	Version : Sun Aug 10 02:43:47 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -101,7 +101,7 @@ else
     fi
   else
     cat "$file"         |
-    od -An -to1 -v      |
+    od -A n -t o1 -v    |
     tr '\t ' '\n\n'     |
     grep '[0-7]'        |
     head -n $((size-n)) |

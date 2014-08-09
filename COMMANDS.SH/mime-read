@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-v] <name> <MIME-file>
-	Version : Sat Aug  9 22:18:58 JST 2014
+	Version : Sun Aug 10 02:43:23 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 	        :   * Although GNU AWK produces better performance than the
 	        :     other AWKs
@@ -400,7 +400,7 @@ if [ -n "$ed_linenum" ]; then
   fi
   # Cut 0x0D,0x0A at the end without head command
   cat $outfile0                |
-  od -An -to1 -v               |
+  od -A n -t o1 -v             |
   grep '[01234567]'            |
   sed '$s/012[[:blank:]]*$//'  |
   grep '[01234567]'            |
