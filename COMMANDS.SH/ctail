@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} -<n> <file>
 	          ${0##*/} <n> <file>
 	          ${0##*/} -<n>c <file>
-	Version : Sat Aug  9 23:16:22 JST 2014
+	Version : Sat Aug  9 23:21:51 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -97,7 +97,7 @@ else
     :
   elif echo | head -c >/dev/null 2>&1; then
     if [ $(printf 1 | head -c 1 | wc -c | awk '{print $1}') -eq 1 ]; then
-      head -c $((size-n)) "$file"
+      env - head -c $((size-n)) "$file"
     fi
   else
     cat "$file"         |
