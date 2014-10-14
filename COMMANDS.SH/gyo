@@ -7,7 +7,7 @@
 print_usage_and_exit () {
   cat <<-__USAGE 1>&2
 	Usage   : ${0##*/} [-f] <file> ...
-	Version : Sun Jun 29 14:55:41 JST 2014
+	Version : Tue Oct 14 18:07:19 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands)
 __USAGE
   exit 1
@@ -16,12 +16,13 @@ __USAGE
 which mktemp >/dev/null 2>&1 || {
   mktemp_fileno=0
   mktemp() {
-    local mktemp_filename
-    mktemp_filename="/tmp/${0##*/}.$$.$mktemp_fileno"
-    mktemp_fileno=$((mktemp_fileno+1))
-    touch "$mktemp_filename"
-    chmod 600 "$mktemp_filename"
-    echo "$mktemp_filename"
+    (
+      mktemp_filename="/tmp/${0##*/}.$$.$mktemp_fileno"
+      mktemp_fileno=$((mktemp_fileno+1))
+      touch "$mktemp_filename"
+      chmod 600 "$mktemp_filename"
+      echo "$mktemp_filename"
+    )
   }
 }
 

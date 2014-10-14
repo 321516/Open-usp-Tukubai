@@ -9,7 +9,7 @@ print_usage_and_exit () {
 	Usage   : ${0##*/} n1 n2 .. <filename>
 	        : ${0##*/} -v <filename>
 	        : ${0##*/} [--] <filename>
-	Version : Sun Jul 13 03:14:08 JST 2014
+	Version : Tue Oct 14 18:07:54 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/UTF-8)
 __USAGE
   exit 1
@@ -18,12 +18,13 @@ __USAGE
 which mktemp >/dev/null 2>&1 || {
   mktemp_fileno=0
   mktemp() {
-    local mktemp_filename
-    mktemp_filename="/tmp/${0##*/}.$$.$mktemp_fileno"
-    mktemp_fileno=$((mktemp_fileno+1))
-    touch "$mktemp_filename"
-    chmod 600 "$mktemp_filename"
-    echo "$mktemp_filename"
+    (
+      mktemp_filename="/tmp/${0##*/}.$$.$mktemp_fileno"
+      mktemp_fileno=$((mktemp_fileno+1))
+      touch "$mktemp_filename"
+      chmod 600 "$mktemp_filename"
+      echo "$mktemp_filename"
+    )
   }
 }
 # decide whether to use the alternative length of AWK or not
