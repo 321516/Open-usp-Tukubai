@@ -10,7 +10,7 @@ print_usage_and_exit () {
 	        : -d delete the key fields from the output file
 	        : -a appending mode
 	        : -z output gzipped files
-	Version : Tue Oct 14 18:03:20 JST 2014
+	Version : Wed Oct 15 08:59:44 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/gzip/UTF-8)
 __USAGE
   exit 1
@@ -330,8 +330,9 @@ if [ -n "${dir_w_final:-}" ]; then
   find "$dir_w" -type f |
   while read plainfile; do
     case $aopt in
-      '>')  cat "$plainfile" | gzip >  "${dir_w_final}${plainfile##*/}.gz";;
-      '>>') cat "$plainfile" | gzip >> "${dir_w_final}${plainfile##*/}.gz";;
+      '>')  gzip >  "${dir_w_final}${plainfile##*/}.gz" < "$plainfile";;
+      '>>') gzip >> "${dir_w_final}${plainfile##*/}.gz" < "$plainfile";;
+      *)    false;;
     esac
     [ $? -eq 0 ] || {
       echo "${0##*/}: Failed to gzip the output files" 1>&2
