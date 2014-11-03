@@ -10,7 +10,7 @@ print_usage_and_exit () {
 	        : -d delete the key fields from the output file
 	        : -a appending mode
 	        : -z output gzipped files
-	Version : Wed Oct 15 14:16:07 JST 2014
+	Version : Mon Nov  3 21:15:14 JST 2014
 	        : Open usp Tukubai (POSIX.1 Bourne Shell/POSIX.1 commands/gzip/UTF-8)
 __USAGE
   exit 1
@@ -308,7 +308,8 @@ BEGIN {
 # main 2) change file to write when fields has changed
 flds_str!=flds_str0 {
   close(file);
-  file = dir '"$file"';
+  file      = dir '"$file"';
+  flds_str0 = flds_str;
 }
 
 # main 3) write fields to file
@@ -319,7 +320,7 @@ flds_str!=flds_str0 {
   '"$dopt"'sub(/ +$/ , "" );
   print '$aopt' file;
 }
-'
+' "$file_r"
 [ $? -eq 0 ] || {
   echo "${0##*/}: Failed to create the output files" 1>&2
   exit 1
